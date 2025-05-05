@@ -1,0 +1,30 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2 with SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+	        ENV: ${{ secrets.ENV }}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          envs: ENV
+          script_stop: true
+          script: |
+            cd /home/ubuntu/skyst-hackathon 
+            rm -rf .env
+            git pull origin main
+            echo "$ENV" > .env
+            npm i
+            npm run build
+            pm2 kill
+            pm2 start dist/main.js --name "backend-server"
