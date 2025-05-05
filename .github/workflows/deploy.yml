@@ -12,7 +12,7 @@ jobs:
       - name: Deploy to EC2 with SSH
         uses: appleboy/ssh-action@v1.0.3
         env:
-	        ENV: ${{ secrets.ENV }}
+          ENV: ${{ secrets.ENV }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
