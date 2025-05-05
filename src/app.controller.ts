@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/users')
+  getDummyUsers(): { name: string; email: string }[] {
+    return this.appService.getDummyUsers();
+  }
 }
