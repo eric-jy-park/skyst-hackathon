@@ -26,5 +26,5 @@ jobs:
             echo "$ENV" > .env
             npm i
             npm run build
-            pm2 kill
-            pm2 start dist/main.js --name "backend-server"
+            sudo pm2 kill
+            sudo pm2 start dist/main.js --name "backend-server"
