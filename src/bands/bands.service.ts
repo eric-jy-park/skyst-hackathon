@@ -1,26 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBandDto } from './dto/create-band.dto';
-import { UpdateBandDto } from './dto/update-band.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Band } from './entities/band.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BandsService {
-  create(createBandDto: CreateBandDto) {
-    return 'This action adds a new band';
-  }
+  constructor(
+    @InjectRepository(Band)
+    private bandRepository: Repository<Band>,
+  ) {}
 
   findAll() {
-    return `This action returns all bands`;
+    return this.bandRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} band`;
-  }
-
-  update(id: number, updateBandDto: UpdateBandDto) {
-    return `This action updates a #${id} band`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} band`;
+  findOne(id: string) {
+    return this.bandRepository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 }

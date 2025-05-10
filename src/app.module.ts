@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BooksModule } from './books/books.module';
 import { SeasonsModule } from './seasons/seasons.module';
 import { BandsModule } from './bands/bands.module';
 import { VideosModule } from './videos/videos.module';
@@ -28,7 +27,6 @@ import { CommentsModule } from './comments/comments.module';
             }
           : false,
     }),
-    BooksModule,
     SeasonsModule,
     BandsModule,
     VideosModule,
