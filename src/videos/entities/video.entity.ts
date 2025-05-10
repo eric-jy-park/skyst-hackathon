@@ -31,6 +31,13 @@ export class Video extends BaseEntity {
   url: string;
 
   @ApiProperty({
+    description: 'The song title of the video',
+    example: 'Song Title',
+  })
+  @Column({ nullable: true })
+  song_title: string;
+
+  @ApiProperty({
     description: 'The song description of the video',
     example: 'This is a song description',
   })
