@@ -28,6 +28,8 @@ export class UsersService {
     await this.userRepository.save(user);
 
     const season = await this.seasonsService.getCurrentFinalSeason();
+    const preliminarySeason =
+      await this.seasonsService.getCurrentPreliminarySeason();
 
     const userSeason = this.userSeasonRepository.create({
       user,
@@ -35,6 +37,13 @@ export class UsersService {
     });
 
     await this.userSeasonRepository.save(userSeason);
+
+    const userSeasonPreliminary = this.userSeasonRepository.create({
+      user,
+      season: preliminarySeason,
+    });
+
+    await this.userSeasonRepository.save(userSeasonPreliminary);
   }
 
   async findUser(userId: string) {
@@ -57,7 +66,7 @@ export class UsersService {
     return user.votes.map((vote) => vote.video);
   }
 
-  async getCurrentUserSeason(userId: string) {
+  async getCurrentUserFinalSeason(userId: string) {
     const user = await this.findUser(userId);
     const currentSeason = await this.seasonsService.getCurrentFinalSeason();
     const userSeason = user.userSeasons.find(
@@ -66,7 +75,23 @@ export class UsersService {
 
     if (!userSeason)
       throw new BadRequestException(
-        'User has no user season for current season',
+        'User has no user season for current final season',
+      );
+
+    return userSeason;
+  }
+
+  async getCurrentUserPreliminarySeason(userId: string) {
+    const user = await this.findUser(userId);
+    const currentSeason =
+      await this.seasonsService.getCurrentPreliminarySeason();
+    const userSeason = user.userSeasons.find(
+      (userSeason) => userSeason.season.id === currentSeason.id,
+    );
+
+    if (!userSeason)
+      throw new BadRequestException(
+        'User has no user season for current preliminary season',
       );
 
     return userSeason;
@@ -79,7 +104,7 @@ export class UsersService {
     if (!user.userSeasons)
       throw new BadRequestException('User has no user seasons');
 
-    const userSeason = await this.getCurrentUserSeason(userId);
+    const userSeason = await this.getCurrentUserFinalSeason(userId);
 
     return currentSeason.voteLimit - userSeason.votesUsed;
   }
@@ -88,7 +113,7 @@ export class UsersService {
     userId: string,
     updateUserSeasonDto: UpdateUserSeasonDto,
   ) {
-    const userSeason = await this.getCurrentUserSeason(userId);
+    const userSeason = await this.getCurrentUserFinalSeason(userId);
 
     return this.userSeasonRepository.save({
       ...userSeason,
