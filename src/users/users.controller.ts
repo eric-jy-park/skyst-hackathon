@@ -20,6 +20,8 @@ export class UsersController {
   @Get('/available-votes')
   async getAvailableVotes(@Headers() header: { authorization: string }) {
     const userId = header.authorization;
-    return this.usersService.getUserAvailableVotes(userId);
+    return {
+      availableVotes: await this.usersService.getUserAvailableVotes(userId),
+    };
   }
 }
