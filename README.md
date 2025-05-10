@@ -1,98 +1,156 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🎸 Skyst Hackathon 프로젝트 문서
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 🚀 프로젝트 개요
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+**청춘무대**는 음악 밴드들의 공연 비디오를 공유하고 투표할 수 있는 플랫폼입니다. 이 플랫폼은 시즌제로 운영되며, 각 시즌은 **예선과 결승** 단계로 구성됩니다. 사용자들은 밴드들의 공연 영상을 감상하고, 투표하며 댓글을 통해 참여할 수 있습니다.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🛠 기술 스택
 
-## Project setup
+* **Backend**: TypeScript 기반 NestJS 프레임워크
+* **Database**: PostgreSQL (ORM: TypeORM)
+* **API 문서화**: Swagger
+* **배포 환경**: Docker & Docker Compose
+
+---
+
+## 📐 시스템 아키텍처
+
+### 🔗 핵심 엔티티
+
+* **User**
+
+  * 사용자 계정 관리
+  * 투표 및 댓글 기능
+
+* **Band**
+
+  * 밴드 정보 (이름, 이미지, 소개)
+  * 비디오 연결
+
+* **Video**
+
+  * 공연 영상 정보 (URL, 앨범 커버, 곡 설명)
+  * 시즌 및 밴드와 연결
+  * 투표 및 댓글 수집
+
+* **Season**
+
+  * 시즌 기간 설정
+  * 예선/결승 단계 구분
+  * 사용자 투표 제한 설정
+
+* **Vote**
+
+  * 사용자 투표 기록 및 선택적 코멘트
+
+* **Comment**
+
+  * 사용자 댓글 관리
+
+---
+
+## 💡 주요 기능
+
+### 📅 시즌 관리
+
+* 시즌 생성 및 관리
+* 예선 및 결승 단계 확인
+* 시즌별 투표 한도 관리
+
+### 🎬 비디오 관리
+
+* 예선 단계: 비디오 랜덤 노출
+* 결승 단계: 투표 수 기반 정렬
+* 시즌별, 밴드별 비디오 관리
+
+### 🗳 사용자 투표 시스템
+
+* 시즌별 사용자 투표 제한
+* 투표 수 집계 및 관리
+* 선택적 투표 코멘트 기능
+
+### 💬 댓글 시스템
+
+* 비디오에 댓글 작성 및 관리
+
+---
+
+## 🛠 설치 및 실행 방법
+
+### 📋 사전 요구사항
+
+* Node.js
+* Docker & Docker Compose
+* PostgreSQL
+
+### 🚧 환경 설정
+
+1. 저장소 복제 및 이동
 
 ```bash
-$ npm install
+git clone [저장소 URL]
+cd skyst-hackathon
 ```
 
-## Compile and run the project
+2. 환경 변수 설정
+   `.env` 파일을 생성하고 다음 설정을 추가합니다.
+
+```env
+DB_HOST=localhost
+DB_USERNAME=postgres
+DB_PASSWORD=password
+DB_DATABASE=postgres
+PORT=3000
+```
+
+3. 데이터베이스 컨테이너 실행
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker-compose up -d db
 ```
 
-## Run tests
+4. 애플리케이션 실행
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
+npm run start:dev
 ```
 
-## Deployment
+5. API 문서 접근
+   브라우저에서 [Swagger 문서](http://localhost:3000/api)로 접속합니다.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+---
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🌐 API 엔드포인트
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+주요 API 엔드포인트:
+
+* `/users`: 사용자 관리
+* `/bands`: 밴드 정보 관리
+* `/videos`: 비디오 조회 및 관리
+* `/seasons`: 시즌 관리
+* `/votes`: 투표 관리
+* `/comments`: 댓글 관리
+
+자세한 API 스펙은 Swagger 문서(`/api`)에서 확인 가능합니다.
+
+---
+
+## 🗃️ 프로젝트 디렉토리 구조
+
+```
+src/
+├── bands/            # 밴드 관리 모듈
+├── comments/         # 댓글 관리 모듈
+├── common/           # 공통 기능 및 유틸리티
+├── seasons/          # 시즌 관리 모듈
+├── users/            # 사용자 관리 모듈
+├── videos/           # 비디오 관리 모듈
+├── votes/            # 투표 관리 모듈
+├── app.module.ts     # 애플리케이션 메인 모듈
+└── main.ts           # 애플리케이션 진입점
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
