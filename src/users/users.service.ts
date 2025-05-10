@@ -1,26 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
+import { UserSeason } from './entities/user-season.entity';
+import { SeasonsService } from 'src/seasons/seasons.service';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
 
-  findAll() {
-    return `This action returns all users`;
-  }
+    @InjectRepository(UserSeason)
+    private readonly userSeasonRepository: Repository<UserSeason>,
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+    private readonly seasonsService: SeasonsService,
+  ) {}
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  async create(createUserDto: CreateUserDto) {
+    const user = this.userRepository.create(createUserDto);
+    await this.userRepository.save(user);
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    const season = await this.seasonsService.getCurrentSeason();
+
+    const userSeason = this.userSeasonRepository.create({
+      user,
+      season,
+    });
+
+    await this.userSeasonRepository.save(userSeason);
   }
 }

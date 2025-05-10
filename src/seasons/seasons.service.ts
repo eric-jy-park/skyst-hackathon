@@ -8,6 +8,8 @@ import { UpdateSeasonDto } from './dto/update-season.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Season } from './entities/season.entity';
 import { IsNull, Repository } from 'typeorm';
+import { UserSeason } from 'src/users/entities/user-season.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class SeasonsService {
@@ -16,11 +18,23 @@ export class SeasonsService {
     private readonly seasonRepository: Repository<Season>,
   ) {}
 
-  async create(createSeasonDto: CreateSeasonDto) {
-    const season = this.seasonRepository.create(createSeasonDto);
-    await this.seasonRepository.save(season);
+  async create(createDto: CreateSeasonDto): Promise<Season> {
+    return await this.seasonRepository.manager.transaction(async (em) => {
+      const season = await em.save(Season, createDto);
 
-    return season;
+      const users = await em.find(User);
+
+      const seeds = users.map((u) => {
+        const us = new UserSeason();
+        us.user = u;
+        us.season = season;
+        return us;
+      });
+
+      await em.save(UserSeason, seeds);
+
+      return season;
+    });
   }
 
   async findAll() {

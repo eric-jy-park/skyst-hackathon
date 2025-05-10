@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity } from 'src/common/entities/base.entity';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { UserSeason } from 'src/users/entities/user-season.entity';
+import { Video } from 'src/videos/entities/video.entity';
 
 @Entity()
-export class Season {
+export class Season extends BaseEntity {
   @ApiProperty({
     description: 'The unique identifier of the season',
     example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
@@ -31,4 +34,25 @@ export class Season {
   })
   @Column({ nullable: true })
   end_date?: Date;
+
+  @ApiProperty({
+    description: 'The number of votes a user can cast in this season',
+    example: 3,
+  })
+  @Column({ default: 3 })
+  voteLimit: number;
+
+  @ApiProperty({
+    description: 'The users who have cast votes in this season',
+    type: () => UserSeason,
+  })
+  @OneToMany(() => UserSeason, (userSeason) => userSeason.season)
+  userSeasons: UserSeason[];
+
+  @ApiProperty({
+    description: 'The videos in this season',
+    type: () => Video,
+  })
+  @OneToMany(() => Video, (video) => video.season)
+  videos: Video[];
 }
