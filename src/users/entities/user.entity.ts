@@ -18,6 +18,9 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
+  @Column({ nullable: true })
+  image: string;
+
   @OneToMany(() => Vote, (vote) => vote.user)
   votes: Vote[];
 
