@@ -38,6 +38,7 @@ export class UsersService {
   }
 
   async findUser(userId: string) {
+    if (!userId) throw new BadRequestException('User ID is required');
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['votes', 'votes.video'],
