@@ -1,12 +1,21 @@
 import { User } from 'src/users/entities/user.entity';
 import { Video } from 'src/videos/entities/video.entity';
-import { Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 
 @Entity()
 @Unique(['user', 'video'])
 export class Vote {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
+  count: number;
 
   @ManyToOne(() => User, (user) => user.votes)
   user: User;

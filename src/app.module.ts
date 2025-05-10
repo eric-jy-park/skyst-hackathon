@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BooksModule } from './books/books.module';
 import { SeasonsModule } from './seasons/seasons.module';
@@ -8,6 +6,7 @@ import { BandsModule } from './bands/bands.module';
 import { VideosModule } from './videos/videos.module';
 import { UsersModule } from './users/users.module';
 import { VotesModule } from './votes/votes.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -35,8 +34,7 @@ import { VotesModule } from './votes/votes.module';
     VideosModule,
     UsersModule,
     VotesModule,
+    CommentsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

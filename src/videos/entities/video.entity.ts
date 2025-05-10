@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Band } from 'src/bands/entities/band.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Season } from 'src/seasons/entities/season.entity';
 import { Vote } from 'src/votes/entities/vote.entity';
@@ -72,4 +73,11 @@ export class Video extends BaseEntity {
   })
   @ManyToOne(() => Band, (band) => band.videos, { eager: true })
   band: Band;
+
+  @ApiProperty({
+    description: 'The comments of the video',
+    example: [],
+  })
+  @OneToMany(() => Comment, (comment) => comment.video, { eager: true })
+  comments: Comment[];
 }

@@ -1,34 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
 import { VotesService } from './votes.service';
 import { CreateVoteDto } from './dto/create-vote.dto';
-import { UpdateVoteDto } from './dto/update-vote.dto';
 
 @Controller('votes')
 export class VotesController {
   constructor(private readonly votesService: VotesService) {}
 
-  @Post()
-  create(@Body() createVoteDto: CreateVoteDto) {
-    return this.votesService.create(createVoteDto);
+  @Post('/:videoId')
+  create(
+    @Param('videoId') videoId: string,
+    @Body() createVoteDto: CreateVoteDto,
+    @Req() req: Request,
+  ) {
+    return this.votesService.vote(createVoteDto.count, videoId, '1');
   }
 
-  @Get()
-  findAll() {
-    return this.votesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.votesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVoteDto: UpdateVoteDto) {
-    return this.votesService.update(+id, updateVoteDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.votesService.remove(+id);
+  @Get(':userId')
+  findAllVotesByUser(@Param('userId') userId: string) {
+    return this.votesService.findAllVotesByUser(userId);
   }
 }
