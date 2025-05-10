@@ -48,16 +48,28 @@ export class SeasonsController {
     return this.seasonsService.findAll();
   }
 
-  @Get('current')
-  @ApiOperation({ summary: 'Retrieve the current season' })
+  @Get('current/preliminary')
+  @ApiOperation({ summary: 'Retrieve the current preliminary season' })
   @ApiResponse({
     status: 200,
-    description: 'Successfully retrieved the current season.',
+    description: 'Successfully retrieved the current preliminary season.',
     type: Season,
   })
   @ApiResponse({ status: 404, description: 'Current season not found.' })
-  getCurrentSeason() {
-    return this.seasonsService.getCurrentSeason();
+  getCurrentPreliminarySeason() {
+    return this.seasonsService.getCurrentPreliminarySeason();
+  }
+
+  @Get('current/final')
+  @ApiOperation({ summary: 'Retrieve the current final season' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved the current final season.',
+    type: Season,
+  })
+  @ApiResponse({ status: 404, description: 'Current season not found.' })
+  getCurrentFinalSeason() {
+    return this.seasonsService.getCurrentFinalSeason();
   }
 
   @Get(':id')

@@ -10,6 +10,7 @@ import { Season } from './entities/season.entity';
 import { IsNull, Repository } from 'typeorm';
 import { UserSeason } from 'src/users/entities/user-season.entity';
 import { User } from 'src/users/entities/user.entity';
+import { SeasonStage } from './enums/season-stage.enum';
 
 @Injectable()
 export class SeasonsService {
@@ -50,10 +51,25 @@ export class SeasonsService {
     return targetSeason;
   }
 
-  async getCurrentSeason() {
+  async getCurrentPreliminarySeason() {
     const seasons = await this.seasonRepository.find({
       where: {
         end_date: IsNull(),
+        stage: SeasonStage.PRELIMINARY,
+      },
+    });
+
+    if (seasons.length > 1)
+      throw new ConflictException('Multiple current season found. Fix it');
+
+    return seasons[0];
+  }
+
+  async getCurrentFinalSeason() {
+    const seasons = await this.seasonRepository.find({
+      where: {
+        end_date: IsNull(),
+        stage: SeasonStage.FINAL,
       },
     });
 

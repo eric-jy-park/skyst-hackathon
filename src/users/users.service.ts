@@ -22,7 +22,7 @@ export class UsersService {
     const user = this.userRepository.create(createUserDto);
     await this.userRepository.save(user);
 
-    const season = await this.seasonsService.getCurrentSeason();
+    const season = await this.seasonsService.getCurrentPreliminarySeason();
 
     const userSeason = this.userSeasonRepository.create({
       user,

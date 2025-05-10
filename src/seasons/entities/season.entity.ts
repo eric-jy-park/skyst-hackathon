@@ -3,6 +3,7 @@ import { BaseEntity } from 'src/common/entities/base.entity';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { UserSeason } from 'src/users/entities/user-season.entity';
 import { Video } from 'src/videos/entities/video.entity';
+import { SeasonStage } from '../enums/season-stage.enum';
 
 @Entity()
 export class Season extends BaseEntity {
@@ -41,6 +42,13 @@ export class Season extends BaseEntity {
   })
   @Column({ default: 3 })
   voteLimit: number;
+
+  @ApiProperty({
+    description: 'The stage of the season',
+    example: 'preliminary',
+  })
+  @Column({ default: SeasonStage.PRELIMINARY })
+  stage: SeasonStage;
 
   @ApiProperty({
     description: 'The users who have cast votes in this season',

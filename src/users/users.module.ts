@@ -10,5 +10,6 @@ import { SeasonsModule } from 'src/seasons/seasons.module';
   imports: [TypeOrmModule.forFeature([User, UserSeason]), SeasonsModule],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}
