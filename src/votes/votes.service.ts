@@ -73,12 +73,6 @@ export class VotesService {
     await this.voteRepository.save(vote);
   }
 
-  async getAvailableVotes(userId: string) {
-    const availableVotes =
-      await this.usersService.getUserAvailableVotes(userId);
-    return availableVotes;
-  }
-
   findAllVotesByUser(userId: string) {
     return this.voteRepository.find({
       where: {

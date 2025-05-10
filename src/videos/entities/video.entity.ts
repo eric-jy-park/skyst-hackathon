@@ -38,6 +38,13 @@ export class Video extends BaseEntity {
   song_description: string;
 
   @ApiProperty({
+    description: 'The album cover of the video',
+    example: 'https://example.com/album-cover.jpg',
+  })
+  @Column()
+  album_cover: string;
+
+  @ApiProperty({
     description: 'The votes of the video',
     example: [],
   })

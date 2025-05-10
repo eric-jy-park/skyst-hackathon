@@ -21,12 +21,6 @@ export class VotesController {
     );
   }
 
-  @Get('/available-votes')
-  getAvailableVotes(@Headers() header: { authorization: string }) {
-    const userId = header.authorization;
-    return this.votesService.getAvailableVotes(userId);
-  }
-
   @Get(':userId')
   findAllVotesByUser(@Param('userId') userId: string) {
     return this.votesService.findAllVotesByUser(userId);
