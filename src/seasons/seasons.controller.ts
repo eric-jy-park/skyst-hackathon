@@ -1,26 +1,12 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { Controller, Get, Body } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { SeasonsService } from './seasons.service';
-import { CreateSeasonDto } from './dto/create-season.dto';
 import { Season } from './entities/season.entity';
 
 @ApiTags('Seasons')
 @Controller('seasons')
 export class SeasonsController {
   constructor(private readonly seasonsService: SeasonsService) {}
-
-  @Post()
-  @ApiOperation({ summary: 'Create a new season' })
-  @ApiBody({ type: CreateSeasonDto })
-  @ApiResponse({
-    status: 201,
-    description: 'The season has been successfully created.',
-    type: Season,
-  })
-  @ApiResponse({ status: 400, description: 'Invalid input.' })
-  create(@Body() createSeasonDto: CreateSeasonDto) {
-    return this.seasonsService.create(createSeasonDto);
-  }
 
   @Get()
   @ApiOperation({ summary: 'Retrieve all seasons' })
