@@ -20,13 +20,20 @@ export class VideosService {
   async findPreliminaryVideos() {
     const season = await this.seasonsService.getCurrentPreliminarySeason();
 
-    return this.videoRepository.find({
+    const videos = await this.videoRepository.find({
       where: {
         season: {
           id: season.id,
         },
       },
     });
+
+    return videos
+      .map((video) => ({
+        ...video,
+        voteCount: video.votes.reduce((sum, vote) => sum + vote.count, 0),
+      }))
+      .sort(() => Math.random() - 0.5);
   }
 
   async findFinalVideos() {
@@ -39,7 +46,12 @@ export class VideosService {
       },
     });
 
-    return videos.sort((a, b) => b.votes.length - a.votes.length);
+    return videos
+      .map((video) => ({
+        ...video,
+        voteCount: video.votes.reduce((sum, vote) => sum + vote.count, 0),
+      }))
+      .sort((a, b) => b.voteCount - a.voteCount);
   }
 
   findOne(id: string) {
