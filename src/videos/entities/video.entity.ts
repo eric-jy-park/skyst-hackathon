@@ -51,7 +51,7 @@ export class Video extends BaseEntity {
       season_no: 1,
       start_date: '2024-01-01T00:00:00.000Z',
       end_date: '2024-12-31T23:59:59.000Z',
-      voteLimit: 3,
+      voteLimit: 100,
       stage: 'preliminary',
       videos: [],
     },

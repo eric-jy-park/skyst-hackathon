@@ -3,17 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Video } from './entities/video.entity';
 import { SeasonsService } from 'src/seasons/seasons.service';
-import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class VideosService {
   constructor(
     @InjectRepository(Video)
-    private videoRepository: Repository<Video>,
+    private readonly videoRepository: Repository<Video>,
 
     private readonly seasonsService: SeasonsService,
-
-    private readonly usersService: UsersService,
   ) {}
 
   findAll() {

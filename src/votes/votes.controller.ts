@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Headers } from '@nestjs/common';
 import { VotesService } from './votes.service';
 import { CreateVoteDto } from './dto/create-vote.dto';
 
@@ -10,9 +10,16 @@ export class VotesController {
   create(
     @Param('videoId') videoId: string,
     @Body() createVoteDto: CreateVoteDto,
-    @Req() req: Request,
+    @Headers() header: { authorization: string },
   ) {
-    return this.votesService.vote(createVoteDto.count, videoId, '1');
+    const userId = header.authorization;
+    return this.votesService.vote(createVoteDto.count, videoId, userId);
+  }
+
+  @Get('/available-votes')
+  getAvailableVotes(@Headers() header: { authorization: string }) {
+    const userId = header.authorization;
+    return this.votesService.getAvailableVotes(userId);
   }
 
   @Get(':userId')

@@ -19,6 +19,7 @@ export class UserSeason {
 
   @ManyToOne(() => Season, (season) => season.userSeasons, {
     onDelete: 'CASCADE',
+    eager: true,
   })
   season: Season;
 

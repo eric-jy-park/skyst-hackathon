@@ -21,12 +21,12 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   image: string;
 
-  @OneToMany(() => Vote, (vote) => vote.user)
+  @OneToMany(() => Vote, (vote) => vote.user, { eager: true })
   votes: Vote[];
 
-  @OneToMany(() => UserSeason, (userSeason) => userSeason.user)
+  @OneToMany(() => UserSeason, (userSeason) => userSeason.user, { eager: true })
   userSeasons: UserSeason[];
 
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user, { eager: true })
   comments: Comment[];
 }

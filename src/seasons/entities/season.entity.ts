@@ -38,9 +38,9 @@ export class Season extends BaseEntity {
 
   @ApiProperty({
     description: 'The number of votes a user can cast in this season',
-    example: 3,
+    example: 100,
   })
-  @Column({ default: 3 })
+  @Column({ default: 100 })
   voteLimit: number;
 
   @ApiProperty({

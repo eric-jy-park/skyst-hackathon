@@ -22,4 +22,11 @@ export class CreateUserDto {
   })
   @IsString()
   password: string;
+
+  @ApiProperty({
+    description: 'The image of the user',
+    example: 'https://example.com/image.png',
+  })
+  @IsString()
+  image: string;
 }

@@ -1,10 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserSeason } from './entities/user-season.entity';
 import { SeasonsService } from 'src/seasons/seasons.service';
+import { UpdateUserSeasonDto } from './dto/update-user-season.dto';
 
 @Injectable()
 export class UsersService {
@@ -22,7 +27,7 @@ export class UsersService {
     const user = this.userRepository.create(createUserDto);
     await this.userRepository.save(user);
 
-    const season = await this.seasonsService.getCurrentPreliminarySeason();
+    const season = await this.seasonsService.getCurrentFinalSeason();
 
     const userSeason = this.userSeasonRepository.create({
       user,
@@ -30,5 +35,63 @@ export class UsersService {
     });
 
     await this.userSeasonRepository.save(userSeason);
+  }
+
+  async findUser(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['votes', 'votes.video'],
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    return user;
+  }
+
+  async findUserVotedVideos(userId: string) {
+    const user = await this.findUser(userId);
+
+    if (!user.votes) return [];
+
+    return user.votes.map((vote) => vote.video);
+  }
+
+  async getCurrentUserSeason(userId: string) {
+    const user = await this.findUser(userId);
+    const currentSeason = await this.seasonsService.getCurrentFinalSeason();
+    const userSeason = user.userSeasons.find(
+      (userSeason) => userSeason.season.id === currentSeason.id,
+    );
+
+    if (!userSeason)
+      throw new BadRequestException(
+        'User has no user season for current season',
+      );
+
+    return userSeason;
+  }
+
+  async getUserAvailableVotes(userId: string) {
+    const user = await this.findUser(userId);
+    const currentSeason = await this.seasonsService.getCurrentFinalSeason();
+
+    if (!user.userSeasons)
+      throw new BadRequestException('User has no user seasons');
+
+    const userSeason = await this.getCurrentUserSeason(userId);
+
+    return currentSeason.voteLimit - userSeason.votesUsed;
+  }
+
+  async updateUserSeason(
+    userId: string,
+    updateUserSeasonDto: UpdateUserSeasonDto,
+  ) {
+    const userSeason = await this.getCurrentUserSeason(userId);
+
+    return this.userSeasonRepository.save({
+      ...userSeason,
+      ...updateUserSeasonDto,
+    });
   }
 }
