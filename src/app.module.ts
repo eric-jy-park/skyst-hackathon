@@ -3,6 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BooksModule } from './books/books.module';
+import { SeasonsModule } from './seasons/seasons.module';
+import { BandsModule } from './bands/bands.module';
+import { VideosModule } from './videos/videos.module';
+import { UsersModule } from './users/users.module';
+import { VotesModule } from './votes/votes.module';
 
 @Module({
   imports: [
@@ -25,6 +30,11 @@ import { BooksModule } from './books/books.module';
           : false,
     }),
     BooksModule,
+    SeasonsModule,
+    BandsModule,
+    VideosModule,
+    UsersModule,
+    VotesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
