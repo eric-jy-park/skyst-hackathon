@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateSeasonDto } from './dto/create-season.dto';
 import { UpdateSeasonDto } from './dto/update-season.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Season } from './entities/season.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 @Injectable()
 export class SeasonsService {
@@ -30,6 +34,19 @@ export class SeasonsService {
       throw new NotFoundException(`Season with id: ${id} does not exist.`);
 
     return targetSeason;
+  }
+
+  async getCurrentSeason() {
+    const seasons = await this.seasonRepository.find({
+      where: {
+        end_date: IsNull(),
+      },
+    });
+
+    if (seasons.length > 1)
+      throw new ConflictException('Multiple current season found. Fix it');
+
+    return seasons[0];
   }
 
   async update(id: Season['id'], updateSeasonDto: UpdateSeasonDto) {

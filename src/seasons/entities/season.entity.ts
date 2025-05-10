@@ -11,6 +11,6 @@ export class Season {
   @Column()
   start_date: Date;
 
-  @Column()
-  end_date: Date;
+  @Column({ nullable: true })
+  end_date?: Date;
 }

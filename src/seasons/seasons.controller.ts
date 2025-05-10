@@ -26,6 +26,11 @@ export class SeasonsController {
     return this.seasonsService.findAll();
   }
 
+  @Get('current')
+  getCurrentSeason() {
+    return this.seasonsService.getCurrentSeason();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: Season['id']) {
     return this.seasonsService.findOne(id);
