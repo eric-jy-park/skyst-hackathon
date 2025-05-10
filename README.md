@@ -119,7 +119,7 @@ npm run start:dev
 ```
 
 5. API 문서 접근
-   브라우저에서 [Swagger 문서](http://localhost:3000/api)로 접속합니다.
+   브라우저에서 [Swagger 문서](https://ericpark.shop/api#/)로 접속합니다.
 
 ---
 
