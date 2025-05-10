@@ -15,11 +15,50 @@ export class VotesService {
     private readonly videosService: VideosService,
   ) {}
 
+  async votePreliminary(
+    count: number,
+    videoId: string,
+    userId: string,
+    comment?: string,
+  ) {
+    const existingVote = await this.voteRepository.findOne({
+      where: {
+        user: { id: userId },
+        video: { id: videoId },
+      },
+    });
+
+    const userSeason =
+      await this.usersService.getCurrentUserPreliminarySeason(userId);
+
+    if (existingVote) {
+      // Update existing vote directly
+      existingVote.count += count;
+      if (comment !== undefined) {
+        existingVote.comment = comment;
+      }
+      await this.voteRepository.save(existingVote);
+    } else {
+      // Create new vote
+      const newVote = this.voteRepository.create({
+        user: { id: userId },
+        video: { id: videoId },
+        count: count,
+        comment,
+      });
+      await this.voteRepository.save(newVote);
+    }
+
+    await this.usersService.updateUserSeason(userId, {
+      votesUsed: userSeason.votesUsed,
+    });
+  }
+
   async vote(count: number, videoId: string, userId: string, comment?: string) {
     const video = await this.videosService.findOne(videoId);
-
+    console.log(userId);
     if (video?.season.stage === SeasonStage.PRELIMINARY) {
-      return this.votePreliminary(count, videoId, userId);
+      return this.votePreliminary(count, videoId, userId, comment);
     }
 
     if (count < 1)
@@ -32,21 +71,7 @@ export class VotesService {
     if (userSeason.votesUsed + count > userSeason.season.voteLimit)
       throw new BadRequestException('User has no votes left');
 
-    await this.voteRepository.save({
-      count,
-      comment,
-      video: {
-        id: videoId,
-      },
-      user: { id: userId },
-    });
-
-    await this.usersService.updateUserSeason(userId, {
-      votesUsed: userSeason.votesUsed + count,
-    });
-  }
-
-  async votePreliminary(count: number, videoId: string, userId: string) {
+    // Check if vote already exists
     const existingVote = await this.voteRepository.findOne({
       where: {
         user: { id: userId },
@@ -54,23 +79,28 @@ export class VotesService {
       },
     });
 
-    // cuz duplicate voting is allowed in prelim season
-    const vote = existingVote
-      ? await this.voteRepository.preload({
-          id: existingVote.id,
-          user: { id: userId },
-          video: { id: videoId },
-          count: existingVote.count + count,
-        })
-      : this.voteRepository.create({
-          user: { id: userId },
-          video: { id: videoId },
-          count: count,
-        });
+    if (existingVote) {
+      // Update existing vote
+      existingVote.count += count;
+      if (comment !== undefined) {
+        existingVote.comment = comment;
+      }
+      await this.voteRepository.save(existingVote);
+    } else {
+      // Create new vote
+      const newVote = this.voteRepository.create({
+        count,
+        comment,
+        video: { id: videoId },
+        user: { id: userId },
+      });
+      await this.voteRepository.save(newVote);
+    }
 
-    if (!vote) throw new BadRequestException('Vote not found');
-
-    await this.voteRepository.save(vote);
+    // Update user season votes count
+    await this.usersService.updateUserSeason(userId, {
+      votesUsed: userSeason.votesUsed + count,
+    });
   }
 
   findAllVotesByUser(userId: string) {

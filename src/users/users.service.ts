@@ -50,7 +50,7 @@ export class UsersService {
     if (!userId) throw new BadRequestException('User ID is required');
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['votes', 'votes.video'],
+      relations: ['votes', 'votes.video', 'userSeasons', 'userSeasons.season'],
     });
 
     if (!user) throw new NotFoundException('User not found');
@@ -69,14 +69,29 @@ export class UsersService {
   async getCurrentUserFinalSeason(userId: string) {
     const user = await this.findUser(userId);
     const currentSeason = await this.seasonsService.getCurrentFinalSeason();
-    const userSeason = user.userSeasons.find(
+
+    let userSeason = user.userSeasons?.find(
       (userSeason) => userSeason.season.id === currentSeason.id,
     );
 
-    if (!userSeason)
-      throw new BadRequestException(
-        'User has no user season for current final season',
-      );
+    if (!userSeason) {
+      // Try to find directly from repository
+      const foundUserSeason = await this.userSeasonRepository.findOne({
+        where: {
+          user: { id: userId },
+          season: { id: currentSeason.id },
+        },
+        relations: ['season'],
+      });
+
+      if (!foundUserSeason) {
+        throw new BadRequestException(
+          'User has no user season for current final season',
+        );
+      }
+
+      userSeason = foundUserSeason;
+    }
 
     return userSeason;
   }
@@ -115,9 +130,17 @@ export class UsersService {
   ) {
     const userSeason = await this.getCurrentUserFinalSeason(userId);
 
-    return this.userSeasonRepository.save({
-      ...userSeason,
+    const updated = await this.userSeasonRepository.preload({
+      id: userSeason.id,
       ...updateUserSeasonDto,
     });
+
+    if (!updated) {
+      throw new NotFoundException(
+        `UserSeason with ID ${userSeason.id} not found`,
+      );
+    }
+
+    return this.userSeasonRepository.save(updated);
   }
 }
