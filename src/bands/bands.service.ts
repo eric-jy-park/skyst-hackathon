@@ -19,6 +19,7 @@ export class BandsService {
       where: {
         id,
       },
+      relations: ['videos'],
     });
   }
 }

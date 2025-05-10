@@ -15,7 +15,7 @@ export class VotesService {
     private readonly videosService: VideosService,
   ) {}
 
-  async vote(count: number, videoId: string, userId: string) {
+  async vote(count: number, videoId: string, userId: string, comment?: string) {
     const video = await this.videosService.findOne(videoId);
 
     if (video?.season.stage === SeasonStage.PRELIMINARY) {
@@ -34,6 +34,7 @@ export class VotesService {
 
     await this.voteRepository.save({
       count,
+      comment,
       video: {
         id: videoId,
       },

@@ -16,4 +16,10 @@ export class UsersController {
     const userId = header.authorization;
     return this.usersService.findUserVotedVideos(userId);
   }
+
+  @Get('/available-votes')
+  async getAvailableVotes(@Headers() header: { authorization: string }) {
+    const userId = header.authorization;
+    return this.usersService.getUserAvailableVotes(userId);
+  }
 }

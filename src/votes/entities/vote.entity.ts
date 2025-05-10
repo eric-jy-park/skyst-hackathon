@@ -17,6 +17,9 @@ export class Vote {
   @Column()
   count: number;
 
+  @Column({ nullable: true })
+  comment: string;
+
   @ManyToOne(() => User, (user) => user.votes)
   user: User;
 

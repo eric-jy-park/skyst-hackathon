@@ -13,7 +13,12 @@ export class VotesController {
     @Headers() header: { authorization: string },
   ) {
     const userId = header.authorization;
-    return this.votesService.vote(createVoteDto.count, videoId, userId);
+    return this.votesService.vote(
+      createVoteDto.count,
+      videoId,
+      userId,
+      createVoteDto.comment,
+    );
   }
 
   @Get('/available-votes')

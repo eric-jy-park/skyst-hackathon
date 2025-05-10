@@ -1,4 +1,4 @@
-import { IsPositive, IsNumber } from 'class-validator';
+import { IsPositive, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateVoteDto {
   @ApiProperty({
@@ -8,4 +8,8 @@ export class CreateVoteDto {
   @IsNumber()
   @IsPositive()
   count: number;
+
+  @IsOptional()
+  @IsString()
+  comment: string;
 }
